@@ -143,7 +143,9 @@ module.exports = {
         sendMessageEmbed(copiedMessageEmbed);
       }
     }
-    copyMessage();
+    copyMessage().catch((error) => {
+      message.channel.send(`\`${error}\``);
+    });
 
     function sendMessageEmbed(copiedMessageEmbed) {
       resourcesChannel.send(copiedMessageEmbed);
