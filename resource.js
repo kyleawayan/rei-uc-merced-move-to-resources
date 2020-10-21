@@ -30,15 +30,31 @@ module.exports = {
 
     async function copyMessage() {
       var lastMessage;
+      var description = "";
+      var beginArgs = 0;
       if (args[0] === undefined) {
+        // you only ran rei tor and added no additional description
         lastMessage = await getLastMessage(message.author.id);
       } else {
         if (!args[0].match(new RegExp(/^\d+$/))) {
-          const tagged = args[0].slice(3, -1);
-          lastMessage = await getLastMessage(tagged);
+          // argument is not only numbers
+          if (!args[0].startsWith("<")) {
+            // if you didn't tag anyone, use first argument as description
+            lastMessage = await getLastMessage(message.author.id);
+          } else {
+            // if args aren't a number (the message id): you tagged someone
+            const tagged = args[0].slice(3, -1);
+            lastMessage = await getLastMessage(tagged);
+            beginArgs = 1;
+          }
         } else {
+          // the argument was only numbers, look for message id
           lastMessage = await message.channel.messages.fetch(args[0]);
+          beginArgs = 1;
         }
+      }
+      if (args[beginArgs] !== undefined) {
+        description = `${args.slice(beginArgs, 999).join(" ")}: `;
       }
       if (
         lastMessage.content.match(
@@ -62,7 +78,7 @@ module.exports = {
           );
           const videoInfo = await ytdl.getInfo(ytVideoURL);
           const copiedMessageEmbed = new Discord.MessageEmbed()
-            .setTitle(lastMessage.content)
+            .setTitle(description + lastMessage.content)
             .setAuthor(
               lastMessage.author.username,
               lastMessage.author.avatarURL()
@@ -80,7 +96,7 @@ module.exports = {
           sendMessageEmbed(copiedMessageEmbed);
         } else {
           const copiedMessageEmbed = new Discord.MessageEmbed()
-            .setTitle(lastMessage.content)
+            .setTitle(description + lastMessage.content)
             .setAuthor(
               lastMessage.author.username,
               lastMessage.author.avatarURL()
@@ -98,7 +114,7 @@ module.exports = {
         }
       } else if (lastMessage.attachments.first() !== undefined) {
         const copiedMessageEmbed = new Discord.MessageEmbed()
-          .setTitle(lastMessage.content)
+          .setTitle(description + lastMessage.content)
           .setAuthor(
             lastMessage.author.username,
             lastMessage.author.avatarURL()
@@ -111,7 +127,7 @@ module.exports = {
         sendMessageEmbed(copiedMessageEmbed);
       } else {
         const copiedMessageEmbed = new Discord.MessageEmbed()
-          .setTitle(lastMessage.content)
+          .setTitle(description + lastMessage.content)
           .setAuthor(
             lastMessage.author.username,
             lastMessage.author.avatarURL()
