@@ -145,6 +145,7 @@ module.exports = {
     }
     copyMessage().catch((error) => {
       message.channel.send(`\`${error}\``);
+      message.channel.stopTyping();
     });
 
     function sendMessageEmbed(copiedMessageEmbed) {
