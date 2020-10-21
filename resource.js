@@ -33,8 +33,12 @@ module.exports = {
       if (args[0] === undefined) {
         lastMessage = await getLastMessage(message.author.id);
       } else {
-        const tagged = args[0].slice(3, -1);
-        lastMessage = await getLastMessage(tagged);
+        if (!args[0].match(new RegExp(/^\d+$/))) {
+          const tagged = args[0].slice(3, -1);
+          lastMessage = await getLastMessage(tagged);
+        } else {
+          lastMessage = await message.channel.messages.fetch(args[0]);
+        }
       }
       if (
         lastMessage.content.match(
