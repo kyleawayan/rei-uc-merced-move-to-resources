@@ -123,6 +123,10 @@ module.exports = {
             `https://discord.com/channels/${lastMessage.channel.guild.id}/${lastMessage.channel.id}/${lastMessage.id}`
           )
           .setImage(lastMessage.attachments.first().url)
+          .addFields({
+            name: `${lastMessage.author.username} has sent a picture.`,
+            value: `${lastMessage.author.username} may have sent more than one picture. Please click on the discord link above to go to the message.`,
+          })
           .setTimestamp();
         sendMessageEmbed(copiedMessageEmbed);
       } else {
