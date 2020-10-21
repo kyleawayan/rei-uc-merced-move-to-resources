@@ -1,0 +1,7 @@
+{
+  "name": "rei-uc-merced-move-to-resources",
+  "filename": "resource.js",
+  "dependencies": [
+    ""
+  ]
+}
